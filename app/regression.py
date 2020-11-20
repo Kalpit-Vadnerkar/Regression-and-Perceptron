@@ -32,7 +32,9 @@ def confusion_matrix(pred, ground, classes=None):
     class_map = {k: v for v, k in enumerate(classes)}
     mat = np.zeros((n_classes, n_classes), dtype=np.int32)
     for p, g in zip(pred, ground):
-        i = class_map[p]
+        #print(f'p = {p}')
+        #print(f'g = {g}')
+        i = class_map[p[0]]
         j = class_map[g]
         mat[i][j] += 1
     return mat, classes
@@ -274,9 +276,12 @@ class App(tk.Frame):
     def summarize(self, task_type, x_train, y_train, x_test, y_test, w):
         if task_type == self.TaskType.REGRESSION:
             try:
+                print(f'W in the summarize function = \n{w}\n')
+                print(f'Shape of x_train = {len(x_train)}')
                 pred_train = np.matmul(x_train, w)
                 pred_test = np.matmul(x_test, w)
                 train_err = 0.5 / len(y_train) * np.sum(np.square(pred_train - y_train))
+                print(f'train error in summarize = {train_err}')
                 test_err = 0.5 / len(y_test) * np.sum(np.square(pred_test - y_test))
             except:
                 tk.messagebox.showinfo("", "Invalid data received from solver function.")
@@ -293,6 +298,8 @@ class App(tk.Frame):
                 if task_type == self.TaskType.BINARY_CLASSIFICATION:
                     pred = np.matmul(x_train, w)
                     pred_train = np.zeros(pred.shape, dtype=y_train.dtype)
+                    print(f'shape of pred_train = {pred_train.shape}')
+                    print(f'shape of pred = {pred.shape}')
                     pred_train[np.where(pred >= 0)] = 1
                     pred = np.matmul(x_test, w)
                     pred_test = np.zeros(pred.shape, dtype=y_test.dtype)

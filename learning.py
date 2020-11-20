@@ -6,6 +6,15 @@
 # attribution to Clemson University and the authors.
 # 
 # Authors: Pei Xu (peix@g.clemson.edu) and Ioannis Karamouzas (ioannis@g.clemson.edu)
+'''
+Project 5 - Linear Regression and Binary Perceptron
+
+Team Members:
+    1. Kalpit Vadnerkar
+    2. Dhananjay Nikam
+'''
+
+
 
 """
 In this assignment, you will implement linear and logistic regression
@@ -32,6 +41,7 @@ will automatically validate the fitted model on the testing set.
 import math
 import numpy as np
 
+
 def linear_regression(x, y, logger=None):
     """
     Linear regression using full batch gradient descent.
@@ -55,7 +65,24 @@ def linear_regression(x, y, logger=None):
     w: a 1D array
        linear regression parameters
     """
-    w = None
+    def Cost(Y, H):
+        return 0.5 / Y.shape[0] * np.sum(np.square(H - Y))
+    
+    X = np.array(x)
+    Y = np.array(y).reshape((len(y), 1))
+    w = np.zeros((X.shape[1], 1))
+    alpha = 0.0001
+    for i in range(10000):
+        H = np.dot(X,w)
+        neww = w - alpha * np.dot(X.T, (H-Y))
+        logger.log(i, Cost(Y, H))
+        if(np.max(abs(neww-w)) <= 1e-4):
+            break
+        w = neww
+    
+    print(f'W in the learning.py function = \n{w}\n')
+    train_err = 0.5 / Y.shape[0] * np.sum(np.square(np.matmul(X,w) - Y))
+    print(f'train error = {train_err}')
     return w
 
 def binary_perceptron(x, y, logger=None):
@@ -85,7 +112,17 @@ def binary_perceptron(x, y, logger=None):
     w: a 1D array
        binary perceptron parameters
     """
-    w = None
+    X = np.array(x)
+    Y = np.array(y).reshape((len(y), 1))
+    w = np.zeros((X.shape[1], 1))
+    Y_hat = np.zeros(Y.shape)
+    while (not np.array_equal(Y,Y_hat)):
+        for i in range(X.shape[0]):
+            xi = X[i].reshape((1,X[i].shape[0]))
+            prod =np.matmul(xi, w)
+            Y_hat[i] = 1 if(prod >= 0) else 0
+            if Y_hat[i] != Y[i]:
+                w = w + ((Y[i] - Y_hat[i]) * xi.T)
     return w
 
 
@@ -116,7 +153,30 @@ def logistic_regression(x, y, logger=None):
     w: a 1D array
        logistic regression parameters
     """
-    w = None
+    def Calculate_H(X, W):
+        Z = np.dot(X, W)
+        H = 1 / (1 + np.exp(-Z))
+        H = np.where(H >= 0.5, 1, 0)
+        return H
+
+    def Cost(Y, H):
+        Cost = (Y * np.log(H, where = H>0)) + ((1 - Y) * np.log(1 - H, where = (1 - H)>0))
+        J = - np.sum(Cost)/Cost.shape[0]
+        return J
+    
+    alpha = 0.001
+    iterations = 10000
+    X = np.array(x)
+    Y = np.array(y).reshape((len(y), 1))
+    w = np.zeros((X.shape[1], 1))
+    for i in range(iterations):
+        H = Calculate_H(X, w)
+        neww = w - (alpha * (np.dot((H - Y).T, X).T)/Y.shape[0])
+        if not i%100:
+            logger.log(i,Cost(Y, H))
+        if(np.max(abs(neww-w)) <= 1e-4):
+            break
+        w = neww
     return w
 
 
