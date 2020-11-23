@@ -34,7 +34,8 @@ def confusion_matrix(pred, ground, classes=None):
     for p, g in zip(pred, ground):
         #print(f'p = {p}')
         #print(f'g = {g}')
-        i = class_map[p[0]]
+        i = class_map[p]
+        #i = class_map[p[0]]
         j = class_map[g]
         mat[i][j] += 1
     return mat, classes

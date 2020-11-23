@@ -66,7 +66,8 @@ def linear_regression(x, y, logger=None):
        linear regression parameters
     """
     def Cost(Y, H):
-        return 0.5 / Y.shape[0] * np.sum(np.square(H - Y))
+        #return 0.5 / Y.shape[0] * np.sum(np.square(H - Y))
+        return 0.5 * np.sum(np.square(H - Y))
     
     X = np.array(x)
     Y = np.array(y).reshape((len(y), 1))
@@ -74,6 +75,7 @@ def linear_regression(x, y, logger=None):
     alpha = 0.0001
     for i in range(10000):
         H = np.dot(X,w)
+        #neww = w - alpha / Y.shape[1] * np.dot(X.T, (H-Y))
         neww = w - alpha * np.dot(X.T, (H-Y))
         logger.log(i, Cost(Y, H))
         if(np.max(abs(neww-w)) <= 1e-4):
@@ -114,16 +116,17 @@ def binary_perceptron(x, y, logger=None):
     """
     X = np.array(x)
     Y = np.array(y).reshape((len(y), 1))
-    w = np.zeros((X.shape[1], 1))
-    Y_hat = np.zeros(Y.shape)
-    while (not np.array_equal(Y,Y_hat)):
-        for i in range(X.shape[0]):
-            xi = X[i].reshape((1,X[i].shape[0]))
-            prod =np.matmul(xi, w)
-            Y_hat[i] = 1 if(prod >= 0) else 0
-            if Y_hat[i] != Y[i]:
-                w = w + ((Y[i] - Y_hat[i]) * xi.T)
-    return w
+    _,features = x.shape
+    w = np.zeros(features)
+    #Y_hat = np.zeros(Y.shape)
+    #while (not np.array_equal(Y,Y_hat)):
+     #   for i in range(X.shape[0]):
+      #      xi = X[i].reshape((1,X[i].shape[0]))
+       #     prod =np.matmul(xi, w)
+        #    Y_hat[i] = 1 if(prod >= 0) else 0
+         #   if Y_hat[i] != Y[i]:
+          #      w = w + ((Y[i] - Y_hat[i]) * xi.T)
+    return w.tolist()
 
 
 def logistic_regression(x, y, logger=None):
