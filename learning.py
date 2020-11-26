@@ -7,6 +7,15 @@
 # 
 # Authors: Pei Xu (peix@g.clemson.edu) and Ioannis Karamouzas (ioannis@g.clemson.edu)
 
+'''
+Project 5 - Linear Regression and Binary Perceptron
+
+Team Members:
+    1. Kalpit Vadnerkar
+    2. Dhananjay Nikam
+'''
+
+
 """
 In this assignment, you will implement linear and logistic regression
 using the gradient descent method, as well as the binary perceptron algorithm. 
